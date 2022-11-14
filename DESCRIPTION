@@ -1,0 +1,16 @@
+Package: plotcolr
+Title: Visualise Your Palettes
+Version: 0.0.0.9001
+Authors@R: c(
+  person("Dan", "Wilson", , "dan@thedatacollective.com.au", c("aut", "cre"))
+  )
+Description: A set of tools to demonstrate how your palette looks in the wild.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Depends:
+    R (>= 2.10)
+Imports:
+    ggplot2
