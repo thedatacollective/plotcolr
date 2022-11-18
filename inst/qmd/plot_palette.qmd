@@ -217,7 +217,7 @@ set.seed(seed)
 data_line <- data.frame(
   x = rep(1:8, pal_length),
   y = unlist(lapply(1:pal_length, FUN = function(x) {rnorm(8, x*2, 2)})),
-  colour = unlist(lapply(1:pal_length, FUN = function(x) {rep(LETTERS[x], 8)}))
+  colour = rep(LETTERS[1:pal_length], each = 8)
 )
 
 ggplot(data_line, aes(x, y, colour = colour)) +
