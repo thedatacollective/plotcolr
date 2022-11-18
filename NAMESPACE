@@ -2,5 +2,6 @@
 
 export("%>%")
 export(plot_palette)
+export(sf_qld)
 export(theme_plot)
 importFrom(magrittr,"%>%")
