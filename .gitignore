@@ -1,0 +1,4 @@
+.DS_Store
+data-raw/1270055003_lga_2020_aust_shp/
+inst/qmd/*/*
+inst/qmd/*.html

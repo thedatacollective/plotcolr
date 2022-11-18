@@ -1,6 +1,6 @@
 Package: plotcolr
 Title: Visualise Your Palettes
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: c(
   person("Dan", "Wilson", , "dan@thedatacollective.com.au", c("aut", "cre"))
   )
@@ -13,4 +13,10 @@ RoxygenNote: 7.2.1
 Depends:
     R (>= 2.10)
 Imports:
-    ggplot2
+    scales,
+    ggplot2,
+    data.table,
+    quarto
+Suggests:
+    treemapify,
+    sf

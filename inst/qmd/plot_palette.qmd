@@ -1,0 +1,340 @@
+---
+title: Palette Testing
+author: plotcolr
+date: today
+execute:
+  echo: false
+params:
+  palette: ["#540d6e","#ee4266","#ffd23f","#3bceac","#0ead69","#66c7f4","#c1cad6","#3c6997"]
+  theme: default
+  seed: 2022
+format:
+  html:
+    toc: true
+---
+
+```{r}
+#| include: true
+
+library(ggplot2)
+library(scales)
+library(rlang)
+library(treemapify)
+library(plotcolr)
+
+palette <- params$palette
+pal_length <- length(palette)
+theme <- params$theme
+
+seed <- params$seed
+
+if (requireNamespace("sf", quietly = TRUE)) {
+  plot_choropleth <- TRUE
+}
+
+if (requireNamespace("treemapify", quietly = TRUE)) {
+  plot_treemap <- TRUE
+}
+
+if (theme == "default") {
+  theme_plot <- function(base_family = "Arial",
+                       base_size = 12,
+                       plot_title_family = "Arial Bold",
+                       plot_title_size = 20,
+                       subtitle_family = base_family,
+                       subtitle_size = 12,
+                       title_family = base_family,
+                       title_size = 12,
+                       caption_family = base_family,
+                       caption_size = 12) {
+    ret <- ggplot2::theme_minimal(
+      base_family = base_family,
+      base_size = base_size
+    )
+
+    # position key items in the plotting area
+    ret <- ret + ggplot2::theme(plot.title.position = "plot")
+    ret <- ret + ggplot2::theme(plot.caption.position = "plot")
+    ret <- ret + ggplot2::theme(legend.position = "bottom")
+
+    # set text elements
+    ret <- ret + ggplot2::theme(text = ggplot2::element_text(
+      family = base_family,
+      colour = "#3f3f3f"
+    ))
+    ret <- ret + ggplot2::theme(title = ggplot2::element_text(
+      family = title_family,
+      size = title_size,
+      colour = "#3f3f3f",
+      lineheight = 1.4
+    ))
+    ret <- ret + ggplot2::theme(plot.title = ggplot2::element_text(
+      family = plot_title_family,
+      size = plot_title_size,
+      face = "bold",
+      colour = "#1C1C1C",
+      lineheight = 1.2
+    ))
+    ret <- ret + ggplot2::theme(plot.subtitle = ggplot2::element_text(
+      family = subtitle_family,
+      size = subtitle_size,
+      colour = "#1C1C1C",
+      lineheight = 1.2,
+      margin = ggplot2::margin(5, 0, 10, 0)
+    ))
+
+    # set axis defaults
+    ret <- ret + ggplot2::theme(axis.text = ggplot2::element_text(size = base_size))
+    ret <- ret + ggplot2::theme(axis.title.y = ggplot2::element_text(
+      size = subtitle_size,
+      hjust = .99,
+      margin = ggplot2::margin(0, 10)
+    ))
+    ret <- ret + ggplot2::theme(axis.title.x = ggplot2::element_text(
+      size = subtitle_size,
+      hjust = 1
+    ))
+
+    # facet headings & panel detail
+    ret <- ret + ggplot2::theme(strip.text = ggplot2::element_text(
+      family = title_family,
+      size = base_size,
+      face = "bold",
+      colour = "#1C1C1C",
+      hjust = 0
+    ))
+    ret <- ret + ggplot2::theme(strip.background = ggplot2::element_blank())
+    ret <- ret + ggplot2::theme(panel.background = ggplot2::element_blank())
+    ret <- ret + ggplot2::theme(panel.spacing = ggplot2::unit(25, "points"))
+    ret <- ret + ggplot2::theme(panel.grid = ggplot2::element_line(
+      colour = "#F4F4F4",
+      size = 0.5
+    ))
+
+    # set legend elements
+    ret <- ret + ggplot2::theme(legend.direction = "horizontal")
+    ret <- ret + ggplot2::theme(legend.title = ggplot2::element_blank())
+    ret <- ret + ggplot2::theme(legend.text = ggplot2::element_text(hjust = 0, size = base_size))
+    ret <- ret + ggplot2::theme(legend.key = ggplot2::element_blank())
+    ret <- ret + ggplot2::theme(legend.position = "bottom")
+
+    # captions
+    ret <- ret + ggplot2::theme(plot.caption = ggplot2::element_text(
+      family = caption_family,
+      size = caption_size,
+      face = "italic",
+      colour = "#707070",
+      hjust = 0
+    ))
+
+    ret
+  }
+  theme <- theme_plot()
+}
+```
+
+## Bar Chart
+```{r}
+set.seed(seed)
+
+data_column <- data.frame(
+  x = LETTERS[1:pal_length],
+  y = rnorm(pal_length, 5000, 1000)
+)
+
+ggplot(data_column, aes(x, y, fill = factor(x))) +
+  geom_col() +
+  scale_y_continuous(labels = comma_format()) +
+  scale_fill_manual(
+    values = palette,
+    guide = guide_legend(nrow = 1)) +
+  labs(
+    title = "A Simulated Column Chart",
+    subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
+    x = "x-axis title",
+    y = "y-axis title",
+    caption = "Source: Simulated data for visualisation") +
+  theme +
+  NULL
+```
+
+## Bar Chart (Horizontal)
+```{r}
+set.seed(seed - 2)
+
+data_column_h <- data.frame(
+  x = LETTERS[1:pal_length],
+  y = rnorm(pal_length, 5000, 1000)
+)
+
+ggplot(data_column_h, aes(x = y, y = x, fill = x)) +
+  geom_col() +
+  scale_x_continuous(labels = comma_format()) +
+  scale_fill_manual(
+    values = palette,
+    guide = guide_legend(nrow = 1)) +
+  labs(
+    title = "A Simulated Column Chart (Horizontal)",
+    subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
+    x = "x-axis title",
+    y = "y-axis title",
+    caption = "Source: Simulated data for visualisation") +
+  theme +
+  NULL
+```
+
+## Scatter Plot
+```{r}
+set.seed(seed)
+
+data_scatter <- data.frame(
+  x = rnorm(pal_length * 8, 50, 10),
+  y = rnorm(pal_length * 8, 10, 5),
+  colour = rep(LETTERS[1:pal_length], 8)
+)
+
+ggplot(data_scatter, aes(x, y, colour = colour)) +
+  geom_point(size = 3) +
+  scale_y_continuous(labels = comma_format()) +
+  scale_colour_manual(
+    values = palette,
+    guide = guide_legend(nrow = 1)) +
+  labs(
+    title = "A Simulated Scatter Plot",
+    subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
+    x = "x-axis title",
+    y = "y-axis title",
+    caption = "Source: Simulated data for visualisation") +
+  theme +
+  NULL
+```
+
+## Line Chart
+```{r}
+set.seed(seed)
+
+data_line <- data.frame(
+  x = rep(1:8, pal_length),
+  y = unlist(lapply(1:pal_length, FUN = function(x) {rnorm(8, x*2, 2)})),
+  colour = unlist(lapply(1:pal_length, FUN = function(x) {rep(LETTERS[x], 8)}))
+)
+
+ggplot(data_line, aes(x, y, colour = colour)) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  scale_y_continuous(labels = comma_format()) +
+  scale_colour_manual(
+    values = palette,
+    guide = guide_legend(nrow = 1)) +
+  labs(
+    title = "A Simulated Line Chart",
+    subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
+    x = "x-axis title",
+    y = "y-axis title",
+    caption = "Source: Simulated data for visualisation") +
+  theme +
+  NULL
+```
+
+## Tree Map
+```{r}
+if (plot_treemap == TRUE) {
+  cat(
+  "{treemapify} needs to be installed to visualise a treemap.\n",
+  "You can do this with the following code:\n\n",
+  "Install the release version of {treemapify} from CRAN:\n
+   install.packages(\"treemapify\")\n\n",
+  "If you want the development version, install it from GitHub:\n
+   devtools::install_github(\"wilkox/treemapify\")"
+  )
+} else {
+
+set.seed(seed)
+
+data_tree <- data.frame(
+  size = rnorm(pal_length, mean = 1000, 500),
+  colour = LETTERS[1:pal_length]
+)
+
+ggplot(data_tree, aes(area = size, fill = colour)) +
+  geom_treemap(colour = "white", size = 1) +
+  geom_treemap_text(
+    aes(label = colour), place = "bottomleft", size = 16, color = "white",
+    fontface = "bold", padding.y = grid::unit(8, "points")) +
+  scale_fill_manual(values = palette) +
+  labs(
+    title = "A Simulated Treemap",
+    subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
+    x = NULL,
+    y = NULL,
+    caption = "Source: Simulated data for visualisation") +
+  theme +
+  theme(legend.position = "none") +
+  NULL
+}
+```
+
+## Choropleth
+```{r}
+if (plot_choropleth == FALSE) {
+  cat(
+  "{sf} needs to be installed to visualise a choropleth.\n",
+  "You can do this with the following code:\n\n",
+  "Install the release version of {sf} from CRAN:\n
+   install.packages(\"sf\")\n\n",
+  "If you want the development version, install it from GitHub:\n
+   devtools::install_github(\"wilkox/treemapify\")"
+  )
+} else {
+localities <- sf_qld$LGA_CODE20
+reps <- length(localities) / pal_length
+colours <- rep(LETTERS[1:pal_length], reps)
+map_colours <- data.frame(LGA_CODE20 = localities, fill = colours)
+
+data_choropleth <- merge(sf_qld, map_colours, by = "LGA_CODE20")
+
+ggplot() +
+  geom_sf(data = data_choropleth, aes(fill = fill), size = 0.10) +
+  scale_fill_manual(
+    values = palette,
+    guide = guide_legend(nrow = 1))+
+  labs(
+    title = "A Simulated Treemap",
+    subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
+    x = NULL,
+    y = NULL,
+    caption = "Source: Simulated data for visualisation") +
+  theme +
+  theme(
+    axis.text = element_blank(),
+    panel.grid = element_blank()) +
+  NULL
+
+}
+```
+## Area Plot
+
+```{r}
+set.seed(seed)
+
+data_area <- data.frame(
+  x = rep(1:20, each = pal_length),
+  y = runif(pal_length * 20, 100, 200),
+  colour = rep(LETTERS[1:pal_length], times = 20)
+)
+
+ggplot(data_area, aes(x, y, fill = colour)) +
+    geom_area(colour = "black", size = 0.10) +
+    scale_y_continuous(labels = comma_format()) +
+  scale_fill_manual(
+    values = palette,
+    guide = guide_legend(nrow = 1)) +
+  labs(
+    title = "A Simulated Area Chart",
+    subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
+    x = "x-axis title",
+    y = "y-axis title",
+    caption = "Source: Simulated data for visualisation") +
+  theme +
+  NULL
+```
