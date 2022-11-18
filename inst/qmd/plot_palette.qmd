@@ -21,6 +21,7 @@ library(scales)
 library(rlang)
 library(treemapify)
 library(plotcolr)
+library(sf)
 
 palette <- params$palette
 pal_length <- length(palette)
@@ -286,18 +287,18 @@ if (plot_choropleth == FALSE) {
    devtools::install_github(\"wilkox/treemapify\")"
   )
 } else {
-localities <- sf_qld$LGA_CODE20
+localities <- plotcolr:::sf_qld$LGA_CODE20
 reps <- length(localities) / pal_length
 colours <- rep(LETTERS[1:pal_length], reps)
 map_colours <- data.frame(LGA_CODE20 = localities, fill = colours)
 
-data_choropleth <- merge(sf_qld, map_colours, by = "LGA_CODE20")
+data_choropleth <- merge(plotcolr:::sf_qld, map_colours, by = "LGA_CODE20")
 
 ggplot() +
   geom_sf(data = data_choropleth, aes(fill = fill), size = 0.10) +
   scale_fill_manual(
     values = palette,
-    guide = guide_legend(nrow = 1))+
+    guide = guide_legend(nrow = 1)) +
   labs(
     title = "A Simulated Treemap",
     subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
