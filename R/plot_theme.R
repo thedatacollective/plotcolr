@@ -1,3 +1,5 @@
+#' Default Palette
+default_pal <- c("#0077b6", "#e88d67", "#ea638c", "#92dce5", "#f7ec59", "#ff66d8", "#2b2d42", "#f8f7f9")
 
 #' Default Theme for plotcolr charts
 #'

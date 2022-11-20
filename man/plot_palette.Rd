@@ -4,17 +4,14 @@
 \alias{plot_palette}
 \title{Plot a set of charts to visualise a palette in the wild}
 \usage{
-plot_palette(
-  palette = c("#0077b6", "#e88d67", "#ea638c", "#92dce5", "#f7ec59", "#ff66d8",
-    "#2b2d42", "#f8f7f9"),
-  theme = theme_plot(),
-  seed = runif(1, 1, 1000)
-)
+plot_palette(palette = default_pal, theme = theme_plot(), seed = 2022)
 }
 \arguments{
 \item{palette}{a vector of hex colours for plotting}
 
 \item{theme}{a ggplot theme to assist with the look and feel}
+
+\item{seed}{a seed to keep the plots consistent}
 }
 \description{
 \code{plot_palette()} is designed to streamline the process of finding palettes
