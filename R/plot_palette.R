@@ -1,3 +1,63 @@
+#' Plot Palette
+#'
+#' Plot a set of charts with a set palette and theme. The function also
+#' includes a parameter to assist with visualising a palette how a person
+#' with colour vision deficiency may see it.
+#'
+#' `plot_palette()` is designed to streamline the process of finding palettes
+#' that will work well with real data. It uses `ggplot2` to create a set of
+#' charts to demonstrate the look and feel of a specific palette
+#'
+#' @param palette a vector of hex colours for plotting
+#' @param theme a ggplot theme to assist with the look and feel
+#' @param seed a seed to keep the plots consistent
+#' @param cvd a colour vision deficiency to simulate
+#'
+#' @export
+plot_palette <- function(palette = default_pal,
+                         theme = theme_plot(),
+                         seed = 2022,
+                         cvd = c("none", "deutan", "protan", "tritan", "all")) {
+  set <- cvd[1]
+
+  plot_list <- list()
+
+  ## No CVD
+  if (set %in% c("none", "all")) {
+    plot_list <- append(
+      plot_list,
+      create_plots(palette, theme, seed)
+    )
+  }
+
+  ## Deutan
+  if (set %in% c("deutan", "all")) {
+    plot_list <- append(
+      plot_list,
+      create_plots(colorspace::deutan(palette), theme, seed)
+    )
+  }
+
+  ## Protan
+  if (set %in% c("protan", "all")) {
+    plot_list <- append(
+      plot_list,
+      create_plots(colorspace::protan(palette), theme, seed)
+    )
+  }
+
+  ## Tritan
+  if (set %in% c("tritan", "all")) {
+    plot_list <- append(
+      plot_list,
+      create_plots(colorspace::tritan(palette), theme, seed)
+    )
+  }
+
+  class(plot_list) <- "multiplot"
+  plot_list
+}
+
 #' Plot a set of charts to visualise a palette in the wild
 #'
 #' `plot_palette()` is designed to streamline the process of finding palettes
@@ -9,7 +69,7 @@
 #' @param seed a seed to keep the plots consistent
 #'
 #' @export
-plot_palette <- function(palette = default_pal,
+create_plots <- function(palette = default_pal,
                          theme = theme_plot(),
                          seed = 2022) {
 
@@ -171,9 +231,9 @@ plot_palette <- function(palette = default_pal,
     NULL
 
   ## Combine Plots
-  multiplot(plot_column, plot_bar, plot_scatter, plot_line, plot_area, plot_treemap, plot_choropleth, cols = 2)
+  list(plot_column, plot_bar, plot_scatter, plot_line, plot_area, plot_treemap, plot_choropleth)
+  # multiplot(plot_column, plot_bar, plot_scatter, plot_line, plot_area, plot_treemap, plot_choropleth, cols = 2)
 }
-
 
 # Multiple plot function
 #
@@ -185,7 +245,7 @@ plot_palette <- function(palette = default_pal,
 # then plot 1 will go in the upper left, 2 will go in the upper right, and
 # 3 will go all the way across the bottom.
 #
-multiplot <- function(..., plotlist = NULL, file, cols = 1, layout = NULL) {
+multiplot <- function(..., plotlist = NULL, file, cols = 2, layout = NULL) {
 
   # Make a list from the ... arguments and plotlist
   plots <- c(list(...), plotlist)
@@ -230,4 +290,9 @@ multiplot <- function(..., plotlist = NULL, file, cols = 1, layout = NULL) {
       )
     }
   }
+}
+
+# TODO: fix custom print method
+print.multiplot <- function(x, ...) {
+  multiplot(plotlist = x)
 }
