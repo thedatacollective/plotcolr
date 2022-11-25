@@ -54,7 +54,8 @@ plot_palette <- function(palette = default_pal,
     )
   }
 
-  class(plot_list) <- "multiplot"
+  # class(plot_list) <- c("palette_charts", class(plot_list))
+  class(plot_list) <- "palette_charts"
   plot_list
 }
 
@@ -292,7 +293,7 @@ multiplot <- function(..., plotlist = NULL, file, cols = 2, layout = NULL) {
   }
 }
 
-# TODO: fix custom print method
-print.multiplot <- function(x, ...) {
+#' @export
+print.palette_charts <- function(x, ...) {
   multiplot(plotlist = x)
 }
