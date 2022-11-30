@@ -63,13 +63,13 @@ plot_palette(
 
 We also wanted to make it easy to make see how a generated palette would look using the [coolors](https://coolors.co) service. `plot_coolors()` takes a url from the coolors website and simulates the colours on some plots.
 
+![A screenshot of a colour palette from the coolors.co website](inst/images/coolors.png)
+
 ```r
 plot_coolors(
   url = "https://coolors.co/d7d9b1-84acce-827191-7d1d3f-512500"
 )
 ```
-
-![A screenshot of a colour palette from the coolors.co website](inst/images/coolors.png)
 
 ![A set of charts showing a colour palette from the coolors.co website rendered with the plot_coolors() function](inst/images/coolors_plot.png)
 
