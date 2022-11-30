@@ -1,6 +1,6 @@
 Package: plotcolr
 Title: Visualise Your Palettes
-Version: 0.0.0.9009
+Version: 0.0.0.9010
 Authors@R: c(
   person("Dan", "Wilson", , "dan@thedatacollective.com.au", c("aut", "cre"))
   )
@@ -15,7 +15,8 @@ Depends:
 Imports:
     scales,
     ggplot2,
-    data.table
+    data.table,
+    cowplot
 Suggests:
     treemapify,
     sf

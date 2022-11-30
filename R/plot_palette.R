@@ -20,43 +20,65 @@ plot_palette <- function(palette = default_pal,
                          cvd = c("none", "deutan", "protan", "tritan", "all")) {
   set <- cvd[1]
 
-  plot_list <- list()
+  # create plot sets
+  base_plots <- create_plots(palette, theme, seed)
+  deutan_plots <- create_plots(colorspace::deutan(palette), theme, seed)
+  protan_plots <- create_plots(colorspace::protan(palette), theme, seed)
+  tritan_plots <- create_plots(colorspace::tritan(palette), theme, seed)
+
+  plot_title <- cowplot::ggdraw() +
+    cowplot::draw_label(
+      "Colour Palette Simulations",
+      fontface = "bold",
+      x = 0,
+      hjust = 0
+    ) +
+    ggplot2::theme(plot.margin = ggplot2::margin(0, 0, 0, 7))
+
+  plot_footer <- cowplot::ggdraw() +
+    cowplot::draw_label(
+      "Made with {plotcolr}  https://github.com/thedatacollective/plotcolr",
+      x = 0,
+      hjust = 0
+    ) +
+    ggplot2::theme(plot.margin = ggplot2::margin(0, 0, 0, 7))
 
   ## No CVD
-  if (set %in% c("none", "all")) {
-    plot_list <- append(
-      plot_list,
-      create_plots(palette, theme, seed)
-    )
+  if (set == "none") {
+    return(cowplot::plot_grid(plot_title, base_plots, plot_footer, rel_heights = c(0.05, 1, 0.025), ncol = 1))
   }
 
   ## Deutan
-  if (set %in% c("deutan", "all")) {
-    plot_list <- append(
-      plot_list,
-      create_plots(colorspace::deutan(palette), theme, seed)
-    )
+  if (set == "deutan") {
+    return(cowplot::plot_grid(plot_title, deutan_plots, plot_footer, rel_heights = c(0.05, 1, 0.025), ncol = 1))
   }
 
   ## Protan
-  if (set %in% c("protan", "all")) {
-    plot_list <- append(
-      plot_list,
-      create_plots(colorspace::protan(palette), theme, seed)
-    )
+  if (set == "protan") {
+    return(cowplot::plot_grid(plot_title, deutan_plots, plot_footer, rel_heights = c(0.05, 1, 0.025), ncol = 1))
   }
 
   ## Tritan
-  if (set %in% c("tritan", "all")) {
-    plot_list <- append(
-      plot_list,
-      create_plots(colorspace::tritan(palette), theme, seed)
-    )
+  if (set == "tritan") {
+    return(cowplot::plot_grid(plot_title, deutan_plots, plot_footer, rel_heights = c(0.05, 1, 0.025), ncol = 1))
   }
 
-  # class(plot_list) <- c("palette_charts", class(plot_list))
-  class(plot_list) <- "palette_charts"
-  plot_list
+  if (set == "all") {
+    return(cowplot::plot_grid(
+      plot_title,
+      cowplot::plot_grid(
+        base_plots,
+        deutan_plots,
+        protan_plots,
+        tritan_plots,
+        ncol = 4
+      ),
+      plot_footer,
+      rel_heights = c(0.05, 1, 0.025),
+      ncol = 1
+    ))
+  }
+  cowplot::plot_grid(plotlist = plot_list, cols = 2)
 }
 
 #' Plot a set of charts to visualise a palette in the wild
@@ -90,13 +112,11 @@ create_plots <- function(palette = default_pal,
     ggplot2::scale_y_continuous(labels = scales::comma_format()) +
     ggplot2::scale_fill_manual(values = palette) +
     ggplot2::labs(
-      title = "A Simulated Column Chart",
-      subtitle = paste0("Made with {plotcolr} on ", Sys.Date()),
       x = "x-axis title",
-      y = "y-axis title",
-      caption = "Source: Simulated data for visualisation"
+      y = "y-axis title"
     ) +
     theme +
+    ggplot2::theme(legend.position = "none") +
     NULL
 
   ## Bar Chart (Horizontal)
@@ -112,13 +132,11 @@ create_plots <- function(palette = default_pal,
     ggplot2::scale_x_continuous(labels = scales::comma_format()) +
     ggplot2::scale_fill_manual(values = palette) +
     ggplot2::labs(
-      title = "",
-      subtitle = "",
       x = "x-axis title",
-      y = "y-axis title",
-      caption = ""
+      y = "y-axis title"
     ) +
     theme +
+    ggplot2::theme(legend.position = "none") +
     NULL
 
   ## Scatter Plot
@@ -130,16 +148,19 @@ create_plots <- function(palette = default_pal,
     colour = rep(LETTERS[1:pal_length], 8)
   )
 
-  plot_scatter <- ggplot2::ggplot(data_scatter, ggplot2::aes(x, y, colour = colour)) +
+  plot_scat <- ggplot2::ggplot(data_scatter, ggplot2::aes(x, y, colour = colour)) +
     ggplot2::geom_point(size = 3) +
     ggplot2::scale_y_continuous(labels = scales::comma_format()) +
     ggplot2::scale_colour_manual(values = palette) +
+    ggplot2::guides(colour = ggplot2::guide_legend(nrow = 1)) +
     ggplot2::labs(
       x = "x-axis title",
-      y = "y-axis title",
+      y = "y-axis title"
     ) +
     theme +
     NULL
+
+  plot_scatter <- plot_scat + ggplot2::theme(legend.position = "none")
 
   ## Line Chart
   set.seed(seed)
@@ -159,9 +180,10 @@ create_plots <- function(palette = default_pal,
     ggplot2::scale_colour_manual(values = palette) +
     ggplot2::labs(
       x = "x-axis title",
-      y = "y-axis title",
+      y = "y-axis title"
     ) +
     theme +
+    ggplot2::theme(legend.position = "none") +
     NULL
 
   ## Treemap
@@ -181,11 +203,19 @@ create_plots <- function(palette = default_pal,
       ggplot2::scale_fill_manual(values = palette) +
       ggplot2::labs(
         x = "x-axis title",
-        y = "y-axis title",
+        y = "y-axis title"
       ) +
       theme +
       ggplot2::theme(legend.position = "none") +
       NULL
+  } else {
+    text <- paste(
+      "To visualise your palette on a treemap, install {treemapify}\n",
+      "install.packages(\"treemapify\")"
+    )
+    plot_treemap <- ggplot2::ggplot() +
+      ggplot2::annotate("text", 4, 24, label = text) +
+      ggplot2::theme_void()
   }
 
   ## Choropleth
@@ -201,14 +231,23 @@ create_plots <- function(palette = default_pal,
       ggplot2::scale_fill_manual(values = palette) +
       ggplot2::labs(
         x = "x-axis title",
-        y = "y-axis title",
+        y = "y-axis title"
       ) +
       theme +
       ggplot2::theme(
         axis.text = ggplot2::element_blank(),
-        panel.grid = ggplot2::element_blank()
+        panel.grid = ggplot2::element_blank(),
+        legend.position = "none"
       ) +
       NULL
+  } else {
+    text <- paste(
+      "To visualise your palette on a choropleth, install {sf}\n",
+      "install.packages(\"sf\")"
+    )
+    plot_choropleth <- ggplot2::ggplot() +
+      ggplot2::annotate("text", 4, 24, label = text) +
+      ggplot2::theme_void()
   }
 
   ## Area Plot
@@ -226,74 +265,35 @@ create_plots <- function(palette = default_pal,
     ggplot2::scale_fill_manual(values = palette) +
     ggplot2::labs(
       x = "x-axis title",
-      y = "y-axis title",
+      y = "y-axis title"
     ) +
     theme +
+    ggplot2::theme(legend.position = "none") +
     NULL
 
+  legend <- cowplot::get_legend(plot_scat)
+
   ## Combine Plots
-  list(plot_column, plot_bar, plot_scatter, plot_line, plot_area, plot_treemap, plot_choropleth)
-  # multiplot(plot_column, plot_bar, plot_scatter, plot_line, plot_area, plot_treemap, plot_choropleth, cols = 2)
+  cowplot::plot_grid(
+    plot_column, plot_bar, plot_scatter, plot_line, plot_area, plot_treemap, plot_choropleth, legend,
+    rel_heights = c(1, 1, 1, 1, 1, 1, 2, .3),
+    ncol = 1
+  )
 }
 
-# Multiple plot function
-#
-# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
-# - cols:   Number of columns in layout
-# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
-#
-# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
-# then plot 1 will go in the upper left, 2 will go in the upper right, and
-# 3 will go all the way across the bottom.
-#
-multiplot <- function(..., plotlist = NULL, file, cols = 2, layout = NULL) {
-
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
-
-  num_plots <- length(plots)
-
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(
-      seq(1, cols * ceiling(num_plots / cols)),
-      ncol = cols,
-      nrow = ceiling(num_plots / cols),
-      byrow = TRUE
-    )
-  }
-
-  if (num_plots == 1) {
-    print(plots[[1]])
-  } else {
-    # Set up the page
-    grid::grid.newpage()
-    grid::pushViewport(
-      grid::viewport(
-        layout = grid::grid.layout(nrow(layout), ncol(layout))
-      )
-    )
-
-    # Make each plot, in the correct location
-    for (i in 1:num_plots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      match_idx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-
-      print(
-        plots[[i]],
-        vp = grid::viewport(
-          layout.pos.row = match_idx$row,
-          layout.pos.col = match_idx$col
-        )
-      )
-    }
-  }
-}
-
+#' Save Palette Plots
+#'
+#' Save plots of palettes with sensible defaults
+#'
+#' @param filename the name and location of the file to be saved
+#' @param plot Plot to save, defaults to last plot displayed.
 #' @export
-print.palette_charts <- function(x, ...) {
-  multiplot(plotlist = x)
+save_plots <- function(filename, plot = last_plot()) {
+  layer_count <- length(plot$layers)
+
+  if (layer_count > 7) {
+    ggplot2::ggsave(filename, plot, width = 30, height = 30, bg = "white")
+  } else {
+    ggplot2::ggsave(filename, plot, width = 10, height = 30, bg = "white")
+  }
 }

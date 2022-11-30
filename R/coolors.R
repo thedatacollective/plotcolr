@@ -15,7 +15,7 @@ plot_coolors <- function(url,
                          cvd = c("none", "deutan", "protan", "tritan", "all")) {
   palette <- get_coolors(url)
 
-  plot_palette(palette, theme = theme, seed = seed)
+  plot_palette(palette, theme = theme, seed = seed, cvd = cvd)
 }
 
 #' Get Coolors
@@ -33,4 +33,3 @@ get_coolors <- function(url) {
 
   palette
 }
-
