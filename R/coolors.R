@@ -2,7 +2,7 @@
 #'
 #' Visualise a palette from a coolors url.
 #'
-#' @param palette a vector of hex colours for plotting
+#' @param url a palette url from the coolors.co website
 #' @param theme a ggplot theme to assist with the look and feel
 #' @param seed a seed to keep the plots consistent
 #' @param cvd a colour vision deficiency to simulate

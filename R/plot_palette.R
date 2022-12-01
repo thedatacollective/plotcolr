@@ -78,7 +78,6 @@ plot_palette <- function(palette = default_pal,
       ncol = 1
     ))
   }
-  cowplot::plot_grid(plotlist = plot_list, cols = 2)
 }
 
 #' Plot a set of charts to visualise a palette in the wild
@@ -96,6 +95,9 @@ create_plots <- function(palette = default_pal,
                          theme = theme_plot(),
                          seed = 2022) {
 
+  ## Define global variabes for R CMD check
+  x <- y <- colour <- size <- fill <- NULL
+
   ## Control Information
   pal_length <- length(palette)
 
@@ -104,7 +106,7 @@ create_plots <- function(palette = default_pal,
 
   data_column <- data.frame(
     x = LETTERS[1:pal_length],
-    y = rnorm(pal_length, 5000, 1000)
+    y = stats::rnorm(pal_length, 5000, 1000)
   )
 
   plot_column <- ggplot2::ggplot(data_column, ggplot2::aes(x, y, fill = factor(x))) +
@@ -124,7 +126,7 @@ create_plots <- function(palette = default_pal,
 
   data_bar <- data.frame(
     x = LETTERS[1:pal_length],
-    y = rnorm(pal_length, 5000, 1000)
+    y = stats::rnorm(pal_length, 5000, 1000)
   )
 
   plot_bar <- ggplot2::ggplot(data_bar, ggplot2::aes(x = y, y = x, fill = x)) +
@@ -143,8 +145,8 @@ create_plots <- function(palette = default_pal,
   set.seed(seed)
 
   data_scatter <- data.frame(
-    x = rnorm(pal_length * 8, 50, 10),
-    y = rnorm(pal_length * 8, 10, 5),
+    x = stats::rnorm(pal_length * 8, 50, 10),
+    y = stats::rnorm(pal_length * 8, 10, 5),
     colour = rep(LETTERS[1:pal_length], 8)
   )
 
@@ -168,7 +170,7 @@ create_plots <- function(palette = default_pal,
   data_line <- data.frame(
     x = rep(1:8, pal_length),
     y = unlist(lapply(1:pal_length, FUN = function(x) {
-      rnorm(8, x * 2, 2)
+      stats::rnorm(8, x * 2, 2)
     })),
     colour = rep(LETTERS[1:pal_length], each = 8)
   )
@@ -190,7 +192,7 @@ create_plots <- function(palette = default_pal,
   if (requireNamespace("treemapify", quietly = TRUE)) {
     set.seed(seed)
     data_tree <- data.frame(
-      size = rnorm(pal_length, mean = 1000, 500),
+      size = stats::rnorm(pal_length, mean = 1000, 500),
       colour = LETTERS[1:pal_length]
     )
     plot_treemap <- ggplot2::ggplot(data_tree, ggplot2::aes(area = size, fill = colour)) +
@@ -255,7 +257,7 @@ create_plots <- function(palette = default_pal,
 
   data_area <- data.frame(
     x = rep(1:20, each = pal_length),
-    y = runif(pal_length * 20, 100, 200),
+    y = stats::runif(pal_length * 20, 100, 200),
     colour = rep(LETTERS[1:pal_length], times = 20)
   )
 

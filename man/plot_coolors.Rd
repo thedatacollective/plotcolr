@@ -12,13 +12,13 @@ plot_coolors(
 )
 }
 \arguments{
+\item{url}{a palette url from the coolors.co website}
+
 \item{theme}{a ggplot theme to assist with the look and feel}
 
 \item{seed}{a seed to keep the plots consistent}
 
 \item{cvd}{a colour vision deficiency to simulate}
-
-\item{palette}{a vector of hex colours for plotting}
 }
 \value{
 a ggplot object
