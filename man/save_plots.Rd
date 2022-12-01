@@ -4,12 +4,18 @@
 \alias{save_plots}
 \title{Save Palette Plots}
 \usage{
-save_plots(filename, plot = last_plot())
+save_plots(
+  filename,
+  plot = last_plot(),
+  cvd = c("none", "deutan", "protan", "tritan", "all")
+)
 }
 \arguments{
 \item{filename}{the name and location of the file to be saved}
 
 \item{plot}{Plot to save, defaults to last plot displayed.}
+
+\item{cvd}{a colour vision deficiency to simulate}
 }
 \description{
 Save plots of palettes with sensible defaults

@@ -289,11 +289,13 @@ create_plots <- function(palette = default_pal,
 #'
 #' @param filename the name and location of the file to be saved
 #' @param plot Plot to save, defaults to last plot displayed.
+#' @param cvd a colour vision deficiency to simulate
+#'
 #' @export
-save_plots <- function(filename, plot = last_plot()) {
+save_plots <- function(filename, plot = last_plot(), cvd = c("none", "deutan", "protan", "tritan", "all")) {
   layer_count <- length(plot$layers)
 
-  if (layer_count > 7) {
+  if (cvd[1] == "all") {
     ggplot2::ggsave(filename, plot, width = 30, height = 30, bg = "white")
   } else {
     ggplot2::ggsave(filename, plot, width = 10, height = 30, bg = "white")
