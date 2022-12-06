@@ -2,7 +2,7 @@
 #' Get a set of shades from a base colour
 #'
 #' @param colour a hex colour value to determine a set of shades from.
-#' @paran n the number of shades to calculate.
+#' @param n the number of shades to calculate.
 #'
 #' @return a vector of hex colours
 #' @export

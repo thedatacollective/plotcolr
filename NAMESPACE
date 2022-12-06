@@ -2,9 +2,12 @@
 
 export(create_plots)
 export(get_coolors)
+export(get_shades)
+export(hsl2rgb)
 export(last_plot)
 export(plot_coolors)
 export(plot_palette)
+export(rgb2hsl)
 export(save_plots)
 export(sf_qld)
 export(theme_plot)
