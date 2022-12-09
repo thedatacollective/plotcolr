@@ -74,10 +74,10 @@ plot_coolors(
 ![A set of charts showing a colour palette from the coolors.co website rendered with the plot_coolors() function](inst/images/coolors_plot.png)
 
 
-Finally we know that it can be helpful to see the palette as a document with the Hex, RGB and HSL colours together so we've created the `print_palette(), `show_palette()` and `save_palette()` functions to be able to see the colours as a specific set.
+Finally, we know that it can be helpful to see the palette as a document with the Hex, RGB and HSL colours together so we've created the `print_palette(), `show_palette()` and `save_palette()` functions to be able to see the colours as a specific set.
 
 ```r
-print_coolours(
+print_coolors(
   url = "https://coolors.co/d7d9b1-84acce-827191-7d1d3f-512500"
 )
 ```
