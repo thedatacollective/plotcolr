@@ -1,6 +1,6 @@
 Package: plotcolr
 Title: Visualise Your Palettes
-Version: 0.0.0.9013
+Version: 0.0.0.9014
 Authors@R: c(
   person("Dan", "Wilson", , "dan@thedatacollective.com.au", c("aut", "cre"))
   )

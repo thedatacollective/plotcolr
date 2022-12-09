@@ -1,3 +1,26 @@
+#' Create a set of shades from a palette
+#'
+#' This function takes an vector of hex colours and creates a set of shades
+#' for each colour. The function is still experimental and may look to change
+#' the internals of how the colours are determined.
+#'
+#' @param palette a vector of hex colours that make up a base palette
+#' @param n the number of shades to calculate
+#' @export
+create_shades <- function(palette, n = 10) {
+  if (missing(palette)) {
+    "No palette provided, please provide a vector of hex colour values"
+  }
+
+  shades <- lapply(
+    1:length(palette), function(x, palette) {
+      get_shades(palette[x])
+    },
+    palette
+  )
+  names(shades) <- palette
+  shades
+}
 
 #' Get a set of shades from a base colour
 #'
@@ -5,7 +28,6 @@
 #' @param n the number of shades to calculate.
 #'
 #' @return a vector of hex colours
-#' @export
 get_shades <- function(colour, n = 10) {
   hsl <- unname(hex2hsl(colour))
 

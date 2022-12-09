@@ -18,6 +18,18 @@ plot_coolors <- function(url,
   plot_palette(palette, theme = theme, seed = seed, cvd = cvd)
 }
 
+#' Print a Coolors Palette
+#'
+#' This function shows the colours in the palette with their associated HEX,
+#' RGB and HSL values
+#'
+#' @param url a palette url from the coolors.co website
+print_coolors <- function(url) {
+  palette <- get_coolors(url)
+
+  print_palette(palette)
+}
+
 #' Get Coolors
 #'
 #' Get a vector of hex colours from a coolors url

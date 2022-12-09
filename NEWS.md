@@ -1,3 +1,7 @@
+# plotcolr 0.0.0.9014
+
+ * Added functions to print palettes as a set of colours. `print_pallet()` and `print_coolors()` along with `save_palette()`
+
 # plotcolr 0.0.0.9012
 
 * Added `get_shades()` as a way to return a set of shades for a palette
