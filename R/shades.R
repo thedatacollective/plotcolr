@@ -13,10 +13,10 @@ create_shades <- function(palette, n = 10) {
   }
 
   shades <- lapply(
-    1:length(palette), function(x, palette) {
-      get_shades(palette[x])
+    1:length(palette), function(x, palette, n) {
+      get_shades(palette[x], n)
     },
-    palette
+    palette, n
   )
   names(shades) <- palette
   shades
